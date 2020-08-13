@@ -1,4 +1,5 @@
 # -*- coding : utf8 -*-
+#!/usr/bin/env python3
 import csv
 import tkinter as tk
 from tkinter import ttk
@@ -711,7 +712,8 @@ class Modification(tk.Toplevel):
             self.ent_club.configure(state='normal')
             self.varClub.set(self.badge['club'])
             self.calpret.configure(state='normal')
-            self.calpret.set_date(self.badge['datepret'])
+            if len(self.badge['datepret']) > 1:
+                self.calpret.set_date(self.badge['datepret'])
             self.varNom.set(self.badge['responsable'])
             self.ent_hhpret.configure(state='normal')
             self.varHhpret.set(self.badge['heurepret'][0:2])
@@ -1126,7 +1128,7 @@ if __name__ == '__main__':
     config.read("badges.ini")
     mes_badges = import_badges(config)
     fenetre_princ = tk.Tk()
-    fenetre_princ.iconbitmap('cgr.ico')
+    fenetre_princ.iconbitmap('@cgr.xbm')
     Principale(fenetre_princ, mes_badges).pack(side="top", fill="both", expand=True)
     fenetre_princ.mainloop()
     export_badges(config, mes_badges)
