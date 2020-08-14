@@ -1,6 +1,7 @@
 # -*- coding : utf8 -*-
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 import csv
+import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo, askokcancel
@@ -138,9 +139,10 @@ class Sortie(tk.Toplevel):
         tk.Toplevel.__init__(self, parent)
         self.title("Sortie de Badge")
         self.badge = badge
-        self.nom=nom
+        self.nom = nom
         # Label constructeur, paramtres du widget
-        self.label = tk.Label(self, text="Sortie du badge "+str(nom)).grid(row=0, column=0, columnspan=4, sticky='N', pady=2)
+        self.label = tk.Label(self, text="Sortie du badge " + str(nom)).grid(row=0, column=0, columnspan=4, sticky='N',
+                                                                             pady=2)
 
         self.varNumero = tk.StringVar()
         self.varNumero.set(badge['numero'])
@@ -324,8 +326,8 @@ class Sortie(tk.Toplevel):
         self.badge['cgr'] = self.varCgr.get()
         self.badge['type'] = self.varTypepret.get()
         self.badge['lieu'] = ''
-        self.badge['dateretour']=''
-        self.badge['heureretour']=''
+        self.badge['dateretour'] = ''
+        self.badge['heureretour'] = ''
         self.badge['statut'] = "prete"
         self.badge['remarque'] = self.ent_remarque.get("1.0", tk.END)
         log_writer(2, self.nom, self.badge)
@@ -339,9 +341,10 @@ class Retour(tk.Toplevel):
         tk.Toplevel.__init__(self, parent)
         self.title("Retour de Badge")
         self.badge = badge
-        self.nom=nom
+        self.nom = nom
         # Label constructeur, paramtres du widget
-        self.label = tk.Label(self, text="Retour du badge"+str(nom)).grid(row=0, column=0, columnspan=4, sticky='N', pady=2)
+        self.label = tk.Label(self, text="Retour du badge" + str(nom)).grid(row=0, column=0, columnspan=4, sticky='N',
+                                                                            pady=2)
 
         self.varNumero = tk.StringVar()
         self.varNumero.set(badge['numero'])
@@ -524,7 +527,7 @@ class Retour(tk.Toplevel):
     def val(self):
         self.badge['dateretour'] = self.dateret
         self.badge['heureretour'] = self.heureret
-        self.badge['statut']='disponible'
+        self.badge['statut'] = 'disponible'
         self.badge['lieu'] = self.varLieu.get()
         self.badge['remarque'] = self.ent_remarque.get("1.0", tk.END)
         log_writer(3, self.nom, self.badge)
@@ -978,7 +981,8 @@ class Principale(tk.Frame):
         self.parent = parent
         parent.title("Badges de la Rotonde")
 
-        self.msg = tk.Label(self, text="Bienvenue sur le système de gestion de badge de la CGR \n v0.1 - Aout 2020 - Noé Germani")
+        self.msg = tk.Label(self,
+                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.11 - Aout 2020 - Noé Germani")
         self.msg.pack()
 
         self.lst_badge = tk.Listbox(self)
@@ -996,6 +1000,7 @@ class Principale(tk.Frame):
         self.btn_modification = tk.Button(self, text="Modification d'un badge", command=self.fen_modif)
         self.btn_ajout = tk.Button(self, text="Ajouter un badge", command=self.fen_ajout)
         self.btn_suppr = tk.Button(self, text="Supprimer un badge", command=self.supprbadge)
+        self.btn_about = tk.Button(self, text="A propos de cette application", command=self.fen_about)
 
         self.btn_aff.pack()
         self.btn_pret.pack()
@@ -1003,6 +1008,7 @@ class Principale(tk.Frame):
         self.btn_modification.pack()
         self.btn_ajout.pack()
         self.btn_suppr.pack()
+        self.btn_about.pack()
 
     def fen_aff(self):
         try:
@@ -1034,7 +1040,7 @@ class Principale(tk.Frame):
             showinfo("Erreur", "Vous devez d'abord selectioner un badge")
         else:
             nom = nom.split(" - ")[0]
-            self.new_sort = Sortie(self.parent, self.badges[nom],nom)
+            self.new_sort = Sortie(self.parent, self.badges[nom], nom)
             self.new_sort.bind("<Destroy>", self.toprintsort)
 
     def fen_ret(self):
@@ -1058,6 +1064,15 @@ class Principale(tk.Frame):
                 log_writer(4, nom, self.badges[nom])
                 del self.badges[nom]
             self.updateliste()
+
+    def fen_about(self):
+        strabout = "Cette application a été crée pour gerer les badges de la Rotonde.\n Toutes les actions effectuées dans " \
+                   "ceete application sont loggée dans le fichier logbadges.csv\n Ce fihcier peut être ouvert avec Calc ou " \
+                   "Excel (encodage UTF-8, séparateur ; )\n \n La base de donnée de l'application est contenue dans " \
+                   "le fichier badges.ini \n Ce fichier ne doit JAMAIS être modifié manuellement\n" \
+                   "Supprimer le fichier badges.ini permet de reinitialiser l'application"
+
+        showinfo("A propos", strabout)
 
     def majlisteajout(self, e):
         if e.widget is self.new_ajout:
@@ -1101,22 +1116,41 @@ def export_badges(config, liste_badges):
     for key in liste_badges:
         config.add_section(key)
         config[key] = liste_badges[key]
-    try:
-        with open("badges.ini", 'w') as configfile:
-            config.write(configfile)
-    except EnvironmentError:
-        showinfo("Erreur", "Les modifications n'ont pu être enregistré, la base de donnée est inacessible")
+    val = 0
+    while (val == 0):
+        try:
+            with open("badges.ini", 'w') as configfile:
+                config.write(configfile)
+        except EnvironmentError:
+            showerror("Erreur", "Les modifications n'ont pu être enregistré, la base de donnée est inacessible\n "
+                                "Verifiez que le fichiers badges.ini est accessible en écriture")
+        else:
+            val = 1
 
 
 def log_writer(code, nom, badge):
+    csv.register_dialect('logbadge', delimiter=';', quoting=csv.QUOTE_MINIMAL)
     opcode = ["Ajout", "Modification", "Sortie", "Retour", "Suppresion"]
     csvline = [code, opcode[code], nom, badge['numero'], badge['etat'], badge['responsable'], badge['telephone'],
                badge['club'], badge['coffre'], badge['cgr'], badge['portebadge'], badge['statut'], badge['lieu'],
                badge['remarque'], badge['datepret'], badge['heurepret'], badge['caution'], badge['type'],
                badge['dateretour'], badge['heureretour']]
     try:
+        with open('logbadges.csv'):
+            pass
+    except IOError:
+        try:
+            with open('logbadges.csv', 'w', newline='', encoding='utf-8') as logfile:
+                csvnomcol = ["OP_CODE", "OP_Descritpion", "Identifiant", "Numero", "Etat", "Responsable", "Téléhpone",
+                             "Club", "CleCoffre", "CleCGR", "PorteBadge", "Statut", "Lieu", "Remarque", "DatePret",
+                             "HeurePret", "Caution", "TypePret", "DateRetour", "HeureRetour"]
+                writer = csv.writer(logfile, 'logbadge')
+                writer.writerow(csvnomcol)
+                showinfo("Information", "Aucun fichier de log existant trouvé\n Un nouveau fichier a été crée")
+        except EnvironmentError:
+            showerror("Erreur", "Impossible de creer le fichier de log logbadges.csv")
+    try:
         with open('logbadges.csv', 'a', newline='', encoding='utf-8') as logfile:
-            csv.register_dialect('logbadge', delimiter=';', quoting=csv.QUOTE_MINIMAL)
             writer = csv.writer(logfile, 'logbadge')
             writer.writerow(csvline)
     except EnvironmentError:
@@ -1128,7 +1162,10 @@ if __name__ == '__main__':
     config.read("badges.ini")
     mes_badges = import_badges(config)
     fenetre_princ = tk.Tk()
-    fenetre_princ.iconbitmap('@cgr.xbm')
+    if os.name == 'nt':
+        fenetre_princ.iconbitmap('cgr.ico')
+    else:
+        fenetre_princ.iconbitmap('@cgr.xbm')
     Principale(fenetre_princ, mes_badges).pack(side="top", fill="both", expand=True)
     fenetre_princ.mainloop()
     export_badges(config, mes_badges)
