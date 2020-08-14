@@ -1,6 +1,9 @@
 # BadgesCGR
 Gestionnaire de badges pour la Rotonde
 
+
+Python 3.8.5 - Tkinter 8.6 - tkcalendar  1.5.0
+
 ## Présentation
 
 Cette application permet de gérer les badges de la Rotonde.
