@@ -19,6 +19,9 @@ Pour réinitialiser l'application, il suffit de le supprimer.
 
 Pour freezer l'application avec pyinstaller 
 
+Dans le fhichier spec : 
+``hiddenimports=["babel.numbers","tkinter.ttk","tkinter.font"]``
+
 Windows : 
 ``pyinstaller --add-data cgr.ico;. --noconsole BadgesCGR.py`` 
 
