@@ -41,9 +41,13 @@ class Ajout(tk.Toplevel):
 
         self.varEtat = tk.StringVar()
         self.lab_etat = tk.Label(self, text="Etat du badge :").grid(row=3, column=0, sticky='W', pady=2)
-        self.ent_etat = tk.Entry(self, textvariable=self.varEtat, width=30).grid(row=3, column=1,
-                                                                                 columnspan=3,
-                                                                                 sticky='N', pady=2)
+        self.list_etat = ["Bon", "Moyen", "Mauvais"]
+        self.combo_etat = ttk.Combobox(self, values=self.list_etat, textvariable=self.varEtat).grid(row=3,
+                                                                                                                column=1,
+                                                                                                                columnspan=3,
+                                                                                                                sticky='N',
+                                                                                                                pady=2)
+        self.varEtat.set(self.list_etat[0])
         self.varCoffre = tk.IntVar()
         self.case_Coffre = tk.Checkbutton(self, text="Clé du coffre asso", variable=self.varCoffre).grid(row=12,
                                                                                                          column=0,
@@ -155,9 +159,13 @@ class Sortie(tk.Toplevel):
         self.varEtat = tk.StringVar()
         self.varEtat.set(badge['etat'])
         self.lab_etat = tk.Label(self, text="Etat du badge :").grid(row=2, column=0, sticky='W', pady=2)
-        self.ent_etat = tk.Entry(self, textvariable=self.varEtat, width=30).grid(row=2, column=1, columnspan=3,
-                                                                                 sticky='N', pady=2)
-
+        self.list_etat = ["Bon", "Moyen", "Mauvais"]
+        self.combo_etat = ttk.Combobox(self, values=self.list_etat, textvariable=self.varEtat).grid(row=2,
+                                                                                                                column=1,
+                                                                                                                columnspan=3,
+                                                                                                                sticky='N',
+                                                                                                                pady=2)
+        
         self.varNom = tk.StringVar()
         self.lab_nom = tk.Label(self, text="Nom du responsable :").grid(row=3, column=0, sticky='W', pady=2)
         self.ent_nom = tk.Entry(self, textvariable=self.varNom, width=30).grid(row=3, column=1, columnspan=3,
@@ -357,10 +365,12 @@ class Retour(tk.Toplevel):
         self.varEtat = tk.StringVar()
         self.varEtat.set(badge['etat'])
         self.lab_etat = tk.Label(self, text="Etat du badge :").grid(row=2, column=0, sticky='W', pady=2)
-        self.ent_etat = tk.Entry(self, textvariable=self.varEtat, state='disabled', width=30).grid(row=2, column=1,
-                                                                                                   columnspan=3,
-                                                                                                   sticky='N', pady=2)
-
+        self.list_etat = ["Bon", "Moyen", "Mauvais"]
+        self.combo_etat = ttk.Combobox(self, values=self.list_etat, textvariable=self.varEtat, state='disabled').grid(row=2,
+                                                                                                                column=1,
+                                                                                                                columnspan=3,
+                                                                                                                sticky='N',
+                                                                                                                pady=2)
         self.varNom = tk.StringVar()
         self.varNom.set(self.badge['responsable'])
         self.lab_nom = tk.Label(self, text="Nom du responsable :").grid(row=3, column=0, sticky='W', pady=2)
@@ -564,9 +574,12 @@ class Modification(tk.Toplevel):
 
         self.varEtat = tk.StringVar()
         self.lab_etat = tk.Label(self, text="Etat du badge :").grid(row=3, column=0, sticky='W', pady=2)
-        self.ent_etat = tk.Entry(self, textvariable=self.varEtat, width=30).grid(row=3, column=1,
-                                                                                 columnspan=3,
-                                                                                 sticky='N', pady=2)
+        self.list_etat = ["Bon", "Moyen", "Mauvais"]
+        self.combo_etat = ttk.Combobox(self, values=self.list_etat, textvariable=self.varEtat).grid(row=3,
+                                                                                                                column=1,
+                                                                                                                columnspan=3,
+                                                                                                                sticky='N',
+                                                                                                                pady=2)
         self.varEtat.set(self.badge['etat'])
 
         self.varStatut = tk.IntVar()
@@ -982,8 +995,8 @@ class Principale(tk.Frame):
         parent.title("Badges de la Rotonde")
 
         self.msg = tk.Label(self,
-                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.11 - Aout 2020 - Noé Germani")
-        self.msg.pack()
+                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.13 - Aout 2020 - Noé Germani")
+        self.msg.pack(padx=10,pady=10)
 
         self.lst_badge = tk.Listbox(self)
         for key in self.badges:
@@ -994,21 +1007,21 @@ class Principale(tk.Frame):
             self.lst_badge.insert('end', key + etat)
         self.lst_badge.pack()
 
-        self.btn_aff = tk.Button(self, text="Affichage de badge", command=self.fen_aff)
-        self.btn_pret = tk.Button(self, text="Pret de badge", command=self.fen_sort)
-        self.btn_retour = tk.Button(self, text="Retour de badge", command=self.fen_ret)
-        self.btn_modification = tk.Button(self, text="Modification d'un badge", command=self.fen_modif)
-        self.btn_ajout = tk.Button(self, text="Ajouter un badge", command=self.fen_ajout)
-        self.btn_suppr = tk.Button(self, text="Supprimer un badge", command=self.supprbadge)
-        self.btn_about = tk.Button(self, text="A propos de cette application", command=self.fen_about)
+        self.btn_aff = tk.Button(self, text="Affichage de badge",width=30, command=self.fen_aff,)
+        self.btn_pret = tk.Button(self, text="Pret de badge", width=30, command=self.fen_sort)
+        self.btn_retour = tk.Button(self, text="Retour de badge",width=30, command=self.fen_ret)
+        self.btn_modification = tk.Button(self, text="Modification d'un badge",width=30, command=self.fen_modif)
+        self.btn_ajout = tk.Button(self, text="Ajouter un badge",width=30, command=self.fen_ajout)
+        self.btn_suppr = tk.Button(self, text="Supprimer un badge",width=30, command=self.supprbadge)
+        self.btn_about = tk.Button(self, text="A propos de cette application",width=30, command=self.fen_about)
 
-        self.btn_aff.pack()
-        self.btn_pret.pack()
-        self.btn_retour.pack()
-        self.btn_modification.pack()
-        self.btn_ajout.pack()
-        self.btn_suppr.pack()
-        self.btn_about.pack()
+        self.btn_aff.pack(padx=10,pady=10)
+        self.btn_pret.pack(padx=10,pady=5)
+        self.btn_retour.pack(padx=10,pady=5)
+        self.btn_modification.pack(padx=10,pady=5)
+        self.btn_ajout.pack(padx=10,pady=5)
+        self.btn_suppr.pack(padx=10,pady=5)
+        self.btn_about.pack(padx=10,pady=5)
 
     def fen_aff(self):
         try:
@@ -1040,8 +1053,11 @@ class Principale(tk.Frame):
             showinfo("Erreur", "Vous devez d'abord selectioner un badge")
         else:
             nom = nom.split(" - ")[0]
-            self.new_sort = Sortie(self.parent, self.badges[nom], nom)
-            self.new_sort.bind("<Destroy>", self.toprintsort)
+            if self.badges[nom]['statut']=='disponible':
+                self.new_sort = Sortie(self.parent, self.badges[nom], nom)
+                self.new_sort.bind("<Destroy>", self.toprintsort)
+            else:
+                showerror('Action Impossible',"Impossible de preter un badge déjà en pret")
 
     def fen_ret(self):
         try:
@@ -1050,8 +1066,12 @@ class Principale(tk.Frame):
             showinfo("Erreur", "Vous devez d'abord selectioner un badge")
         else:
             nom = nom.split(" - ")[0]
-            self.new_ret = Retour(self.parent, self.badges[nom], nom)
-            self.new_ret.bind("<Destroy>", self.toprintret)
+            if self.badges[nom]['statut']!='disponible':
+                self.new_ret = Retour(self.parent, self.badges[nom], nom)
+                self.new_ret.bind("<Destroy>", self.toprintret)
+            else:
+                showerror('Action Impossible',"Impossible de retourner un badge déjà disponible")
+           
 
     def supprbadge(self):
         try:

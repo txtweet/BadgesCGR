@@ -22,11 +22,14 @@ Pour freezer l'application avec pyinstaller
 Dans le fhichier spec : 
 ``hiddenimports=["babel.numbers","tkinter.ttk","tkinter.font"]``
 
+``datas=[('cgr.xbm', '.')]`` pour Linux
+``datas=[('cgr.ico', '.')]`` pour Windows
+
 Windows : 
-``pyinstaller --add-data cgr.ico;. --noconsole BadgesCGR.py`` 
+``pyinstaller --noconsole BadgesCGR.spec`` 
 
 Linux : 
-``pyinstaller --add-data cgr.xbm:. --noconsole BadgesCGR.py`` 
+``pyinstaller --noconsole BadgesCGR.spec`` 
 
 
 
