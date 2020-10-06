@@ -995,16 +995,11 @@ class Principale(tk.Frame):
         parent.title("Badges de la Rotonde")
 
         self.msg = tk.Label(self,
-                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.15 - Septembre 2020 - Noé Germani")
+                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.16 - Septembre 2020 - Noé Germani")
         self.msg.grid(row=0, column = 0, columnspan =2, sticky='N', padx=10,pady=10)
 
         self.lst_badge = tk.Listbox(self)
-        for key in self.badges:
-            if self.badges[key]['statut'] == 'disponible':
-                etat = " - Disponible"
-            else:
-                etat = " - En Prêt"
-            self.lst_badge.insert('end', key + etat)
+        self.updateliste()
 
         self.lst_badge.grid(row=1, column = 0, sticky='NE', padx=10,pady=10)
         self.scrollbar = tk.Scrollbar(self, orient="vertical")
@@ -1024,9 +1019,9 @@ class Principale(tk.Frame):
         self.btn_pret.grid(row=3, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
         self.btn_retour.grid(row=4, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
         self.btn_modification.grid(row=5, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
-        self.btn_ajout.grid(row=5, column = 0,columnspan =2,padx=10,pady=5)
-        self.btn_suppr.grid(row=6, column = 0,columnspan =2,padx=10,pady=5)
-        self.btn_about.grid(row=7, column = 0,columnspan =2,padx=10,pady=5)
+        self.btn_ajout.grid(row=6, column = 0,columnspan =2,padx=10,pady=5)
+        self.btn_suppr.grid(row=7, column = 0,columnspan =2,padx=10,pady=5)
+        self.btn_about.grid(row=8, column = 0,columnspan =2,padx=10,pady=5)
 
     def fen_aff(self):
         try:
@@ -1117,12 +1112,17 @@ class Principale(tk.Frame):
 
     def updateliste(self):
         self.lst_badge.delete(0, 'end')
+        liste =[]
         for key in self.badges:
             if self.badges[key]['statut'] == 'disponible':
                 etat = " - Disponible"
             else:
                 etat = " - En Prêt"
-            self.lst_badge.insert('end', key + etat)
+            liste.append(key + etat)
+
+        liste.sort()
+        for i in liste:
+            self.lst_badge.insert('end',i)
 
 
 def import_badges(config):
