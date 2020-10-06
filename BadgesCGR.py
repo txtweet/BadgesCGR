@@ -3,13 +3,13 @@
 import csv
 import os
 import tkinter as tk
+from time import strftime
 from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo, askokcancel
 from tkinter.scrolledtext import ScrolledText
 import configparser
 from tkcalendar import Calendar, DateEntry
-from datetime import datetime
-
+from datetime import datetime, date
 
 # Format table CSV OP_CODE;OP_Descritpion;Identifiant;Numero;Etat;Responsable;Téléhpone;Club;CleCoffre;CleCGR
 # ;PorteBadge;Statut;Lieu;Remarque;DatePret;HeurePret;Caution;TypePret;DateRetour;HeureRetour
@@ -995,8 +995,8 @@ class Principale(tk.Frame):
         parent.title("Badges de la Rotonde")
 
         self.msg = tk.Label(self,
-                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.13 - Aout 2020 - Noé Germani")
-        self.msg.pack(padx=10,pady=10)
+                            text="Bienvenue sur le système de gestion de badge de la CGR \n v0.15 - Septembre 2020 - Noé Germani")
+        self.msg.grid(row=0, column = 0, columnspan =2, sticky='N', padx=10,pady=10)
 
         self.lst_badge = tk.Listbox(self)
         for key in self.badges:
@@ -1005,7 +1005,12 @@ class Principale(tk.Frame):
             else:
                 etat = " - En Prêt"
             self.lst_badge.insert('end', key + etat)
-        self.lst_badge.pack()
+
+        self.lst_badge.grid(row=1, column = 0, sticky='NE', padx=10,pady=10)
+        self.scrollbar = tk.Scrollbar(self, orient="vertical")
+        self.scrollbar.grid(row=1, column=1, sticky='wns')
+        self.scrollbar.config(command=self.lst_badge.yview)
+        self.lst_badge['yscrollcommand']=self.scrollbar.set
 
         self.btn_aff = tk.Button(self, text="Affichage de badge",width=30, command=self.fen_aff,)
         self.btn_pret = tk.Button(self, text="Pret de badge", width=30, command=self.fen_sort)
@@ -1015,13 +1020,13 @@ class Principale(tk.Frame):
         self.btn_suppr = tk.Button(self, text="Supprimer un badge",width=30, command=self.supprbadge)
         self.btn_about = tk.Button(self, text="A propos de cette application",width=30, command=self.fen_about)
 
-        self.btn_aff.pack(padx=10,pady=10)
-        self.btn_pret.pack(padx=10,pady=5)
-        self.btn_retour.pack(padx=10,pady=5)
-        self.btn_modification.pack(padx=10,pady=5)
-        self.btn_ajout.pack(padx=10,pady=5)
-        self.btn_suppr.pack(padx=10,pady=5)
-        self.btn_about.pack(padx=10,pady=5)
+        self.btn_aff.grid(row=2, column = 0,columnspan =2, sticky='N', padx=10,pady=10)
+        self.btn_pret.grid(row=3, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
+        self.btn_retour.grid(row=4, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
+        self.btn_modification.grid(row=5, column = 0,columnspan =2, sticky='N', padx=10,pady=5)
+        self.btn_ajout.grid(row=5, column = 0,columnspan =2,padx=10,pady=5)
+        self.btn_suppr.grid(row=6, column = 0,columnspan =2,padx=10,pady=5)
+        self.btn_about.grid(row=7, column = 0,columnspan =2,padx=10,pady=5)
 
     def fen_aff(self):
         try:
@@ -1151,7 +1156,9 @@ def export_badges(config, liste_badges):
 def log_writer(code, nom, badge):
     csv.register_dialect('logbadge', delimiter=';', quoting=csv.QUOTE_MINIMAL)
     opcode = ["Ajout", "Modification", "Sortie", "Retour", "Suppresion"]
-    csvline = [code, opcode[code], nom, badge['numero'], badge['etat'], badge['responsable'], badge['telephone'],
+    datelog = date.today().isoformat()
+    heure = datetime.now().strftime("%H:%M:%S")
+    csvline = [code, datelog, heure, opcode[code], nom, badge['numero'], badge['etat'], badge['responsable'], badge['telephone'],
                badge['club'], badge['coffre'], badge['cgr'], badge['portebadge'], badge['statut'], badge['lieu'],
                badge['remarque'], badge['datepret'], badge['heurepret'], badge['caution'], badge['type'],
                badge['dateretour'], badge['heureretour']]
@@ -1161,7 +1168,7 @@ def log_writer(code, nom, badge):
     except IOError:
         try:
             with open('logbadges.csv', 'w', newline='', encoding='utf-8') as logfile:
-                csvnomcol = ["OP_CODE", "OP_Descritpion", "Identifiant", "Numero", "Etat", "Responsable", "Téléhpone",
+                csvnomcol = ["OP_CODE","Date","Heure", "OP_Descritpion", "Identifiant", "Numero", "Etat", "Responsable", "Téléhpone",
                              "Club", "CleCoffre", "CleCGR", "PorteBadge", "Statut", "Lieu", "Remarque", "DatePret",
                              "HeurePret", "Caution", "TypePret", "DateRetour", "HeureRetour"]
                 writer = csv.writer(logfile, 'logbadge')
